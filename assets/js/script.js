@@ -4,6 +4,9 @@ const nextBtn = document.querySelector('.btn_next')
 const prevBtn = document.querySelector('.btn_prev')
 const carouselNav = document.querySelector('.carousel_dots');
 
+let start;
+let isDraging = false;
+
 // Create indicator's button for nav
 const createDot = (currentSlide) => {
     const btn = document.createElement('div');
@@ -90,17 +93,30 @@ carouselNav.addEventListener('click', e => {
     updateIndicators(currentIndicator, indicators[targetIndex]);
 })
 
-setInterval(()=> nextBtn.click(), 2000);
-
-
-
-  track.addEventListener("touchmove", (e) => {
-    let touch = e.targetTouches[0];
-    const px = touch.pageX;
-    const midpoint = Math.floor(screen.width / 2);
-    if (px > midpoint) {
-        nextBtn.click();
-    } else {
+// Event listener for swipe in desktop
+track.addEventListener('dragstart', e => {
+    e.dataTransfer.setDragImage(e.target, window.outerWidth, window.outerHeight);
+    isDraging = true;
+    start = e.clientX;
+})
+track.addEventListener('dragend', e => {
+    isDraging = false;
+    if(start < e.clientX) {
         prevBtn.click();
+    }else nextBtn.click();
+})
+
+// Event listener for swipe in mobile
+track.addEventListener('touchstart', e => {
+    isDraging = true;
+    start = e.changedTouches[0].clientX;
+})
+track.addEventListener('touchend', e => {
+    isDraging = false;
+    if(start < e.changedTouches[0].clientX) {
+        prevBtn.click();
+    }else {
+        nextBtn.click();
     }
-  });
+})
+
