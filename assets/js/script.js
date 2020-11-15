@@ -51,20 +51,26 @@ const moveSlideHandler = (targetSibling, currentSlide) => {
 
 nextBtn.addEventListener('click', () => {
     const currentSlide = getCurrentSlide();
-    const nextSibling = currentSlide.nextElementSibling;
+    let nextSibling = currentSlide.nextElementSibling;
     const currentIndicator = carouselNav.querySelector('.current_slide')
-    const nextIndicator = currentIndicator.nextElementSibling;
-    if(!nextSibling) return;
+    let nextIndicator = currentIndicator.nextElementSibling;
+    if(!nextSibling) {
+        nextSibling = slides[0]
+        nextIndicator = carouselNav.firstElementChild
+    }
     moveSlideHandler(nextSibling, currentSlide);
     updateIndicators(currentIndicator, nextIndicator)
 });
 
 prevBtn.addEventListener('click', () => {
     const currentSlide = getCurrentSlide();
-    const prevSibling = currentSlide.previousElementSibling;
+    let prevSibling = currentSlide.previousElementSibling;
     const currentIndicator = carouselNav.querySelector('.current_slide')
-    const prevIndicator = currentIndicator.previousElementSibling;
-    if(!prevSibling) return;
+    let prevIndicator = currentIndicator.previousElementSibling;
+    if(!prevSibling) {
+        prevSibling = slides[slides.length - 1];
+        prevIndicator = carouselNav.lastElementChild
+    }
     moveSlideHandler(prevSibling, currentSlide);
     updateIndicators(currentIndicator, prevIndicator);
 });
@@ -83,3 +89,18 @@ carouselNav.addEventListener('click', e => {
     moveSlideHandler(targetSlide, currentSlide)
     updateIndicators(currentIndicator, indicators[targetIndex]);
 })
+
+setInterval(()=> nextBtn.click(), 2000);
+
+
+
+  track.addEventListener("touchmove", (e) => {
+    let touch = e.targetTouches[0];
+    const px = touch.pageX;
+    const midpoint = Math.floor(screen.width / 2);
+    if (px > midpoint) {
+        nextBtn.click();
+    } else {
+        prevBtn.click();
+    }
+  });
